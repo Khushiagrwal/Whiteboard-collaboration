@@ -31,5 +31,5 @@ mongoose.connect(config.MONGODB_URL).then(()=>{
 server.listen(config.PORT,(req,res)=>{
     console.log(`Server is connected successfully at port ${config.PORT}`)
 })
-
+app.use(express.json())
 app.use("/api/user",userRoute);
