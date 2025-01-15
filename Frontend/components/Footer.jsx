@@ -1,6 +1,6 @@
 // Footer.js
 import React from 'react';
-import '../dist/Css/Footer.css';
+import '../public/Css/Footer.css';
 
 const Footer = () => {
   return (
