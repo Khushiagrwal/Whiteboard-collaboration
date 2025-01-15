@@ -5,7 +5,9 @@ const cors=require("cors")
 const http=require("http")
 const {Server} =require("socket.io")
 const mongoose =require("mongoose")
-const setupSocket = require("./routes/socket")
+const setupSocket = require("./api/routes/socket")
+const userRoute =require("./api/routes/authRoute")
+
 
 const server=http.createServer(app)
 app.use(cors());
@@ -29,3 +31,5 @@ mongoose.connect(config.MONGODB_URL).then(()=>{
 server.listen(config.PORT,(req,res)=>{
     console.log(`Server is connected successfully at port ${config.PORT}`)
 })
+
+app.use("/api/user",userRoute);

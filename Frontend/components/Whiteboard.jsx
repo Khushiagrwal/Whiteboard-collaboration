@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
 import "../public/Css/Whiteboard.css"
+import { useNavigate } from 'react-router-dom';
 
 
 const Whiteboard = ({connection}) => {
-  
+  const navigate = useNavigate();
+
   const socket=connection
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
@@ -18,6 +20,7 @@ const Whiteboard = ({connection}) => {
 
   const leaveRoom = () => {
     socket.emit("leaveRoom", room);
+    navigate('/');
   };
 
   useEffect(() => {
