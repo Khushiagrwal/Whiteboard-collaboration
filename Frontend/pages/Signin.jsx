@@ -20,11 +20,11 @@ const Signin = () => {
     console.log("Google Sign-In clicked");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try
     {
-        const res=axios.post("http://localhost:8080/api/user/signin",formData, { withCredentials: true })
+        const res= await axios.post("http://localhost:8080/api/user/signin",formData, { withCredentials: true })
         navigate("/")
         console.log(res.data)
     }
