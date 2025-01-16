@@ -1,27 +1,32 @@
 import React, { useState } from "react";
 import "../public/Css/Auth.css";
+import axios from "axios";
+import {useNavigate} from "react-router-dom"
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    username: "",
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    role: "", // Add role field
   });
 
+  const navigate =useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match");
-      return;
+    try {
+      const res = await axios.post("http://localhost:8080/api/user/signup", formData);
+      navigate("/")
+      console.log(res.data);
+    } catch (error) {
+      console.error(error.response?.data || "An error occurred"); // Handle error response
     }
-    // Handle signup logic here
-    console.log("Form submitted", formData);
   };
 
   return (
@@ -29,12 +34,12 @@ const Signup = () => {
       <form className="form" onSubmit={handleSubmit}>
         <h2 className="heading">Sign Up</h2>
         <div className="inputGroup">
-          <label htmlFor="username">Username</label>
+          <label htmlFor="name">Username</label>
           <input
             type="text"
-            id="username"
-            name="username"
-            value={formData.username}
+            id="name"
+            name="name"
+            value={formData.name}
             onChange={handleChange}
             required
           />
@@ -71,6 +76,20 @@ const Signup = () => {
             onChange={handleChange}
             required
           />
+        </div>
+        <div className="inputGroup">
+          <label htmlFor="role">Role</label>
+          <select
+            id="role"
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            required
+          >
+            <option value="" disabled>Select a role</option>
+            <option value="admin">Admin</option>
+            <option value="student">Student</option>
+          </select>
         </div>
         <button type="submit" className="submitButton">Sign Up</button>
       </form>

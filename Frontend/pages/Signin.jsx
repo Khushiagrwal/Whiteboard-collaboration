@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";  // Import useNavigate hook
 import "../public/Css/Auth.css";
+import axios from "axios"
 
 const Signin = () => {
   const [formData, setFormData] = useState({
@@ -21,12 +22,20 @@ const Signin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle sign-in form submission logic
-    console.log("Sign-in form submitted", formData);
+    try
+    {
+        const res=axios.post("http://localhost:8080/api/user/signin",formData, { withCredentials: true })
+        navigate("/")
+        console.log(res.data)
+    }
+    catch(error)
+    {
+        console.error(error.response?.data || "An error occurred"); 
+    }
+    
   };
 
   const handleSignupRedirect = () => {
-    // Redirect to the signup page using useNavigate
     navigate("/signup");
   };
 
