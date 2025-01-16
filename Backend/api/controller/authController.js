@@ -52,10 +52,12 @@ const Signin = async (req, res) => {
       expiresIn: "1h", // Set token expiration time
     });
 
+    // Remove the password field before sending the user object
+    const { password: _, ...userWithoutPassword } = validUser._doc;
     res
       .cookie("access_token", token, { httpOnly: true })
       .status(200)
-      .json({ msg: "Signin successful", user: validUser });
+      .json({ msg: "Signin successful", user: userWithoutPassword  });
   } catch (error) {
     res.status(500).json({ msg: "Server Error", error: error.message });
   }
