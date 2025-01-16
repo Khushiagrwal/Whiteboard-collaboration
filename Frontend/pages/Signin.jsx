@@ -1,14 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";  // Import useNavigate hook
+import { useNavigate } from "react-router-dom";
 import "../public/Css/Auth.css";
-import axios from "axios"
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { signInStart, signInFailure, signInSuccess } from "../src/redux/user/userSlice";
 
 const Signin = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-  const navigate = useNavigate();  // Initialize useNavigate hook
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const { loading, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,23 +17,21 @@ const Signin = () => {
   };
 
   const handleGoogleSignin = () => {
-    // Handle Google sign-in logic here
     console.log("Google Sign-In clicked");
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try
-    {
-        const res= await axios.post("http://localhost:8080/api/user/signin",formData, { withCredentials: true })
-        navigate("/")
-        console.log(res.data)
+    try {
+      dispatch(signInStart());
+      const res = await axios.post("http://localhost:8080/api/user/signin", formData, { withCredentials: true });
+      dispatch(signInSuccess(res.data));
+      navigate("/");
+      console.log(res.data);
+    } catch (error) {
+      dispatch(signInFailure(error.response?.data || { msg: "An unknown error occurred" }));
+      console.error(error.response?.data || "An error occurred");
     }
-    catch(error)
-    {
-        console.error(error.response?.data || "An error occurred"); 
-    }
-    
   };
 
   const handleSignupRedirect = () => {
@@ -65,7 +64,11 @@ const Signin = () => {
             required
           />
         </div>
-        <button type="submit" className="submitButton">Sign In</button>
+        <button type="submit" className="submitButton" disabled={loading}>
+          {loading ? "Signing In..." : "Sign In"}
+        </button>
+        {loading && <p>Loading...</p>}
+        {error && <p className="error">{error.msg || "An error occurred"}</p>}
       </form>
       <button className="googleButton" onClick={handleGoogleSignin}>
         Sign In with Google
