@@ -9,7 +9,7 @@ const Signup = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "", // Add role field
+    role: "",
   });
 
   const navigate =useNavigate();

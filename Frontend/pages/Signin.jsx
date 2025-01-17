@@ -24,7 +24,7 @@ const Signin = () => {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      const res = await axios.post("http://localhost:8080/api/user/signin", formData, { withCredentials: true });
+      const res = await axios.post("http://localhost:8080/api/user/signin", formData,{ withCredentials: true });
       dispatch(signInSuccess(res.data));
       navigate("/");
       console.log(res.data);

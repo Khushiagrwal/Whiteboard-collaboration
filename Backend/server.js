@@ -47,6 +47,8 @@ const userRoute = require("./api/routes/authRoute");
 
 const app = express();
 const server = http.createServer(app);
+const isAuthenticate =require("./middleware/authenticateJWT");
+const cookieParser = require("cookie-parser");
 
 // Middleware
 app.use(
@@ -57,13 +59,13 @@ app.use(
 );
 
 app.use(express.json());
-
+app.use(cookieParser());
 // Socket.IO setup
 const io = new Server(server, {
   cors: {
     origin: config.FrontendUrl, // Match CORS with frontend URL
   },
-});
+}); 
 
 setupSocket(io);
 
@@ -80,6 +82,10 @@ mongoose
 
 // Routes
 app.use("/api/user", userRoute);
+
+app.get("/authenticate", isAuthenticate, (req, res) => {
+  res.send("yes you are authenticate"); // Response if the user is authenticated
+});
 
 // Start Server
 server.listen(config.PORT, () => {
