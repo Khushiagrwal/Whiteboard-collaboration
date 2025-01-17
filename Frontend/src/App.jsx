@@ -5,19 +5,19 @@ import Signup from '../pages/Signup'
 import Signin from '../pages/Signin'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import Whiteboard from "../components/Whiteboard"
 
 function App() 
 {
   return (
     <>
     <Router>
-      <Header/>
       <Routes>
         <Route path='/' element={<Home/>}/>
         <Route path='/Signup' element={<Signup/>}/>
         <Route path='/Signin' element={<Signin/>}/>
+        <Route path='/whiteboard' element={<Whiteboard/>}/>
       </Routes>
-      <Footer/>
     </Router>
     </>
   )

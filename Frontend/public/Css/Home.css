@@ -1,24 +1,257 @@
-/* loading icon styling  */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.home-container {
+  /* max-width: 1200px; */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.home-header {
+  text-align: center;
+  padding: 20px;
+  background: #f0f8ff;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+
+.home-header h1 {
+  font-size: 2.5rem;
+  color: #333;
+}
+
+.home-header p {
+  font-size: 1.2rem;
+  color: #555;
+  margin: 10px 0;
+}
+
+.get-started-btn {
+  padding: 10px 20px;
+  background: #0073e6;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.get-started-btn:hover {
+  background: #005bb5;
+}
+
+/* Feature Section */
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feature-item img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.feature-item h2 {
+  font-size: 1.5rem;
+  color: #0073e6;
+  margin: 10px 0;
+}
+
+.feature-item p {
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Testimonials Section */
+.testimonials {
+  margin-top: 40px;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+}
+
+.testimonials h2 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.testimonial-item {
+  margin-bottom: 15px;
+  text-align: center;
+  font-style: italic;
+  color: #555;
+}
+
+.testimonial-item p:last-child {
+  font-style: normal;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Footer */
+.home-footer {
+  text-align: center;
+  margin-top: 30px;
+  padding: 15px;
+  background: #f0f8ff;
+  border-radius: 10px;
+}
+
+.home-footer a {
+  color: #0073e6;
+  text-decoration: none;
+}
+
+.home-footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .home-header h1 {
+    font-size: 2rem;
+  }
+
+  .home-header p {
+    font-size: 1rem;
+  }
+
+  .feature-item h2 {
+    font-size: 1.2rem;
+  }
+
+  .feature-item p {
+    font-size: 0.9rem;
+  }
+}
+
+/* Container for loading */
 .loading-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full viewport height */
+  background-color: rgba(255, 255, 255, 0.7); /* Optional: background overlay */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000; /* Makes sure it's above other content */
+}
+
+/* Loading icon */
+.loading-icon {
+  width: 100px; /* Increased size of loading icon */
+  height: 100px; /* Increased size of loading icon */
+  animation: rotate 2s linear infinite; /* Optional: adds rotation effect */
+}
+
+/* Rotation animation */
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
   }
-  
-  .loading-icon {
-    width: 100px;
-    height: 100px;
-    animation: spin 2s linear infinite;
+  to {
+    transform: rotate(360deg);
   }
-  
-  /* @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  } */
-  
+}
+
+/* About Section */
+.about {
+  background-color: #eef6ff; /* Light blue background */
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  text-align: center; /* Center-align content */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+}
+
+.about h2 {
+  font-size: 2rem;
+  color: #0073e6; /* Blue for headings */
+  margin-bottom: 15px;
+}
+
+.about p {
+  font-size: 1.1rem;
+  color: #555; /* Neutral text color */
+  line-height: 1.8;
+  margin: 10px 0;
+}
+
+/* Use Cases Section */
+.use-cases {
+  background: #f9f9f9; /* Light grey background */
+  padding: 30px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.use-cases h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #0073e6; /* Blue for headings */
+  margin-bottom: 20px;
+}
+
+.use-cases ul {
+  list-style: none; /* Remove default list styling */
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid layout */
+  gap: 20px;
+}
+
+.use-cases li {
+  background: #fff; /* White background for list items */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s; /* Smooth hover effect */
+}
+
+.use-cases li:hover {
+  transform: translateY(-5px); /* Lift effect on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhance shadow on hover */
+}
+
+.use-cases li strong {
+  color: #0073e6; /* Highlighted text */
+}
+
+.use-cases li p {
+  font-size: 1rem;
+  color: #555; /* Neutral text color */
+  line-height: 1.6;
+  margin: 10px 0;
+}
+
+/* Add Icons to Use Cases */
+.use-cases li::before {
+  content: '💡'; /* Default icon for list items */
+  font-size: 1.5rem;
+  color: #0073e6; /* Blue icon color */
+  display: block;
+  margin-bottom: 10px;
+}

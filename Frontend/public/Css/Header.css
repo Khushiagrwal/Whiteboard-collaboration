@@ -1,31 +1,58 @@
-/* Header.css */
+/* Header Styles */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;
-    background-color: rgb(3, 3, 31);
-    color: aliceblue;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(90deg, #2c3e50, #4ca1af);
+  color: #ecf0f1;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: bold;
+  font-family: 'Poppins', sans-serif;
+  color: #f39c12;
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.link {
+  font-size: 1rem;
+  color: #ecf0f1;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+
+.link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #f1c40f;
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    padding: 1rem;
   }
-  
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-  }
-  
+
   .nav {
-    display: flex;
+    flex-direction: column;
     gap: 1rem;
   }
-  
+
   .link {
-    color: #ecf0f1;
-    text-decoration: none;
     font-size: 1rem;
-    transition: color 0.3s;
   }
-  
-  .link:hover {
-    color: #3498db;
-  }
-  
+}
