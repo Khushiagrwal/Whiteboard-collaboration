@@ -1,73 +1,35 @@
-// const setupSocket = (io) => {
-//     io.on("connection", (socket) => {
-//       console.log(`${socket.id} connected`);
-      
-//       socket.on("joinRoom", (room) => {
-//         socket.join(room);
-//         console.log(`User ${socket.id} joined room: ${room}`);
-//       });
-  
-//       socket.on("leaveRoom", (room) => {
-//         socket.leave(room);
-//         console.log(`User ${socket.id} left room: ${room}`);
-//       });
-  
-//       socket.on("sendMessage", (room, msg) => {
-//         io.to(room).emit("receiveMessage", msg);
-//         console.log(`Message sent to room ${room}: ${msg}`);
-//       });
-  
-//       socket.on("disconnect", () => {
-//         console.log(`User disconnected: ${socket.id}`);
-//       });
-//     });
-//   };
-  
-//   module.exports = setupSocket;
-  
-
-
 const setupSocket = (io) => {
-  io.on("connection", (socket) => {
-    console.log(`${socket.id} connected`);
+  const activeUsers = new Map(); // Map to track active connections
 
-    // Store the room the user has joined
-    let currentRoom = null;
+io.on('connection', (socket) => {
+  console.log('A user connected:', socket.id);
 
-    // Handle draw event
-    socket.on("draw", (data) => {
-      if (currentRoom) {
-        io.to(currentRoom).emit("draw", data); // Broadcast to the current room
-      }
-    });
+  // Event: User provides their unique identifier (e.g., user ID or email)
+  socket.on('register', (userId) => {
+    if (activeUsers.has(userId)) {
+      const existingSocket = activeUsers.get(userId);
 
-    // Handle room joining
-    socket.on("joinRoom", (room) => {
-      if (currentRoom) {
-        socket.leave(currentRoom); // Leave the previous room if any
-      }
-      socket.join(room); // Join the new room
-      currentRoom = room; // Update the current room
-      console.log(`${socket.id} joined room: ${room}`);
-    });
+      // Disconnect the existing connection
+      existingSocket.disconnect();
+      console.log(`Disconnected duplicate connection for user: ${userId}`);
+    }
 
-    // Handle leaving the room
-    socket.on("leaveRoom", () => {
-      if (currentRoom) {
-        socket.leave(currentRoom);
-        console.log(`${socket.id} left room: ${currentRoom}`);
-        currentRoom = null; // Clear the current room
-      }
-    });
-
-    // Handle disconnect
-    socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
-      if (currentRoom) {
-        console.log(`${socket.id} was in room: ${currentRoom}`);
-      }
-    });
+    // Register the new connection
+    activeUsers.set(userId, socket);
+    console.log(`User ${userId} connected with socket ID: ${socket.id}`);
   });
+
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    for (const [userId, userSocket] of activeUsers.entries()) {
+      if (userSocket === socket) {
+        activeUsers.delete(userId); // Remove user from active users
+        console.log(`User ${userId} disconnected.`);
+        break;
+      }
+    }
+  });
+});
 };
 
 module.exports = setupSocket;

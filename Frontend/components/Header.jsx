@@ -67,7 +67,7 @@ const Header = () => {
         ) : (
           <a href="/signin" className="link">Sign In</a>
         )}
-        <a href="#" className="link">Contact</a>
+        <a href="/join" className="link">Join</a>
       </nav>
     </header>
   );

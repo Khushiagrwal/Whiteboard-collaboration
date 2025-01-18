@@ -1,132 +1,55 @@
-// import React, { useRef, useEffect, useState } from "react";
-// import "../public/Css/Whiteboard.css"
-// import { useNavigate } from 'react-router-dom';
-
-
-// const Whiteboard = ({connection}) => {
-//   const navigate = useNavigate();
-
-//   const socket=connection
-//   const canvasRef = useRef(null);
-//   const contextRef = useRef(null);
-//   const [isDrawing, setIsDrawing] = useState(false);
-//   const [xcord, setXcord] = useState(0);
-//   const [ycord, setYcord] = useState(0);
-//   const [room, setRoom] = useState("");
-
-//   const joinRoom = () => {
-//     socket.emit("joinRoom", room);
-//   };
-
-//   const leaveRoom = () => {
-//     socket.emit("leaveRoom", room);
-//     navigate('/');
-//   };
-
-//   useEffect(() => {
-//     const canvas = canvasRef.current;
-//     canvas.width = window.innerWidth * 0.8;
-//     canvas.height = 400;
-
-//     const context = canvas.getContext("2d");
-//     context.lineCap = "round";
-//     context.lineWidth = 3;
-//     context.strokeStyle = "purple";
-//     contextRef.current = context;
-
-//     socket.on("draw", ({ x, y, start }) => {
-//       if (start) {
-//         contextRef.current.beginPath();
-//         contextRef.current.moveTo(x, y);
-//       } else {
-//         contextRef.current.lineTo(x, y);
-//         contextRef.current.stroke();
-//       }
-//     });
-
-//     return () => {
-//       socket.off("draw");
-//     };
-//   }, []);
-
-//   const startDrawing = ({ nativeEvent }) => {
-//     const { offsetX, offsetY } = nativeEvent;
-//     contextRef.current.beginPath();
-//     contextRef.current.moveTo(offsetX, offsetY);
-//     setIsDrawing(true);
-
-//     socket.emit("draw", { x: offsetX, y: offsetY, start: true });
-//   };
-
-//   const draw = ({ nativeEvent }) => {
-//     if (!isDrawing) return;
-
-//     const { offsetX, offsetY } = nativeEvent;
-//     setXcord(offsetX);
-//     setYcord(offsetY);
-
-//     socket.emit("draw", { x: offsetX, y: offsetY, start: false });
-
-//     contextRef.current.lineTo(offsetX, offsetY);
-//     contextRef.current.stroke();
-//   };
-
-//   const stopDrawing = () => {
-//     contextRef.current.closePath();
-//     setIsDrawing(false);
-//   };
-
-//   const clearCanvas = () => {
-//     const canvas = canvasRef.current;
-//     contextRef.current.clearRect(0, 0, canvas.width, canvas.height);
-//   };
-
-//   return (
-//     <div className="whiteboard-container">
-//       <div className="whiteboard-input">
-//         <input
-//           type="text"
-//           placeholder="Enter Room"
-//           value={room}
-//           onChange={(e) => setRoom(e.target.value)}
-//         />
-//         <button onClick={joinRoom}>Join Room</button>
-//         <button onClick={leaveRoom}>Leave Room</button>
-//       </div>
-//       <h1 className="whiteboard-header">Whiteboard</h1>
-//       <p className="whiteboard-coordinates">
-//         Coordinates: {xcord}, {ycord}
-//       </p>
-//       <canvas
-//         ref={canvasRef}
-//         className="whiteboard-canvas"
-//         onMouseDown={startDrawing}
-//         onMouseMove={draw}
-//         onMouseUp={stopDrawing}
-//         onMouseLeave={stopDrawing}
-//       ></canvas>
-//       <div className="whiteboard-clear-btn">
-//         <button onClick={clearCanvas}>Clear</button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Whiteboard;
-
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPencilAlt, FaEraser, FaCircle } from 'react-icons/fa'; // Import icons
 import io from 'socket.io-client';
 import '../public/Css/Whiteboard.css'; // Import the styling
-
-const socket = io(); // Connect to the Socket.IO server
+import {useNavigate} from "react-router-dom"
+import InviteLink from './InviteLink';
 
 const Whiteboard = () => {
   const canvasRef = useRef(null);
+  const socketRef = useRef(null);
   const [drawing, setDrawing] = useState(false);
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
-  const [brushSize, setBrushSize] = useState(5); // Default brush size
-  const [currentTool, setCurrentTool] = useState('pencil'); // Pencil or Eraser
+  const [brushSize, setBrushSize] = useState(5); 
+  const [currentTool, setCurrentTool] = useState('pencil'); 
+  const [user,setUser]= useState("");
+  const [email,setEmail]=useState("");
+  const [userId,setUserId]=useState();
+  const navigate=useNavigate();
+
+  useEffect(() => {
+    try {
+      let userData = localStorage.getItem('persist:root');
+      if (userData) {
+        userData = JSON.parse(userData);
+        const userInfo = JSON.parse(userData.user).userInfo.user;
+        setUserId(userInfo._id);
+        setUser(userInfo.name);
+        setEmail(userInfo.email);
+      }
+    } catch (error) 
+    {
+      navigate("/signin")
+      console.error('Error parsing user data from localStorage:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user && !socketRef.current) {
+      // Create socket connection only if it's not already created
+      socketRef.current = io("http://localhost:8080/");
+      socketRef.current.emit("register", email);  // Register with the user email
+      console.log(socketRef.current)
+      // Cleanup function to disconnect the socket on unmount or when `user` changes
+      return () => {
+        if (socketRef.current) {
+          socketRef.current.disconnect();
+          // localStorage.removeItem('persist:root')
+          socketRef.current = null;  // Reset the socket reference
+        }
+      };
+    }
+  }, [user, email]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -145,24 +68,24 @@ const Whiteboard = () => {
     window.addEventListener('resize', scaleCanvas);
 
     // Handle drawing data from other clients
-    socket.on('draw', (data) => {
-      const { x, y, lastX, lastY, tool, brushSize } = data;
-      ctx.lineWidth = brushSize;
-      if (tool === 'eraser') {
-        ctx.globalCompositeOperation = 'destination-out'; // Eraser effect
-      } else {
-        ctx.globalCompositeOperation = 'source-over'; // Pencil effect
-      }
-      ctx.beginPath();
-      ctx.moveTo(lastX, lastY);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-    });
+    // socket.on('draw', (data) => {
+    //   const { x, y, lastX, lastY, tool, brushSize } = data;
+    //   ctx.lineWidth = brushSize;
+    //   if (tool === 'eraser') {
+    //     ctx.globalCompositeOperation = 'destination-out'; // Eraser effect
+    //   } else {
+    //     ctx.globalCompositeOperation = 'source-over'; // Pencil effect
+    //   }
+    //   ctx.beginPath();
+    //   ctx.moveTo(lastX, lastY);
+    //   ctx.lineTo(x, y);
+    //   ctx.stroke();
+    // });
 
-    return () => {
-      socket.off('draw'); // Cleanup listener on component unmount
-      window.removeEventListener('resize', scaleCanvas);
-    };
+    // return () => {
+    //   socket.off('draw'); // Cleanup listener on component unmount
+    //   window.removeEventListener('resize', scaleCanvas);
+    // };
   }, []);
 
   const getCursorPosition = (e) => {
@@ -194,14 +117,14 @@ const Whiteboard = () => {
     const { x, y } = lastPosition;
     const newPosition = getCursorPosition(e);
 
-    socket.emit('draw', {
-      x: newPosition.x,
-      y: newPosition.y,
-      lastX: x,
-      lastY: y,
-      tool: currentTool,
-      brushSize: brushSize,
-    });
+    // socket.emit('draw', {
+    //   x: newPosition.x,
+    //   y: newPosition.y,
+    //   lastX: x,
+    //   lastY: y,
+    //   tool: currentTool,
+    //   brushSize: brushSize,
+    // });
 
     ctx.lineWidth = brushSize;
 
@@ -215,8 +138,8 @@ const Whiteboard = () => {
     ctx.moveTo(x, y);
     ctx.lineTo(newPosition.x, newPosition.y);
     ctx.stroke();
-
     setLastPosition(newPosition);
+
   };
 
   const changeTool = (tool) => {
@@ -241,8 +164,42 @@ const Whiteboard = () => {
   const handleTouchEnd = () => {
     stopDrawing();
   };
+  const [showDropdown, setShowDropdown] = useState(false);
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown);
+  };
 
   return (
+    <>
+    <nav className="navbar">
+      <div className="navbar-left">
+      <h1 className="logo">Whiteboard App</h1>
+      </div>
+      <div className="navbar-right">
+      {user && <InviteLink  userId={userId}/>}
+      <div className="profile" onClick={toggleDropdown}>
+      <img
+        src="https://i.pinimg.com/originals/3d/0a/d6/3d0ad6219d1d58ce1b9ce45e1b2b5754.png"
+        alt="Profile"
+        className="profile-pic"
+      />
+    </div>
+    {showDropdown && (
+      <div className="dropdown">
+        <button
+                className="remove-share"
+                onClick={() => setShowDropdown(!showDropdown)}
+              >
+              &times;
+        </button>
+        <span className="dropdown-name">USERNAME : {user}</span>
+        <span className="dropdown-name">ID: {userId}</span>
+        <span className="dropdown-email">EMAIL :{email}</span>
+      </div>
+    )}
+    </div>
+    </nav>
+
     <div className="whiteboard-container">
       <div className="toolbar">
         <button onClick={() => changeTool('pencil')} title="Pencil">
@@ -272,6 +229,7 @@ const Whiteboard = () => {
         onTouchEnd={handleTouchEnd}
       />
     </div>
+    </>
   );
 };
 
