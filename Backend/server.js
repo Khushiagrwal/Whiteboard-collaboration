@@ -8,10 +8,12 @@ const config = require("./config");
 const setupSocket = require("./api/routes/socket");
 const userRoute = require("./api/routes/authRoute");
 const inviteRoute =require("./api/routes/inviteRoute");
+const joinRoute =require("./api/routes/joinRoute");
 const app = express();
 const server = http.createServer(app);
 const isAuthenticate =require("./middleware/authenticateJWT");
 const cookieParser = require("cookie-parser");
+
 
 // Middleware
 app.use(
@@ -51,6 +53,7 @@ app.get("/authenticate", isAuthenticate, (req, res) => {
 });
 
 app.use("/api/share",isAuthenticate,inviteRoute);
+app.use("/api/join",isAuthenticate,joinRoute);
 
 // Start Server
 server.listen(config.PORT, () => {

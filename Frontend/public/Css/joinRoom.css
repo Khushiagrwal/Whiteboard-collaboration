@@ -1,0 +1,153 @@
+.join-room-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background-color: #f9fafb;
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+  }
+  
+  .join-header {
+    text-align: center;
+    margin-bottom: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.089); /* Add a subtle border with transparency */
+    border-radius: 15px; 
+    width: 50%;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1), 0 -8px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .subtext {
+    font-size: 1rem;
+    color: #666;
+    margin-top: 8px;
+    font-style: italic;
+  }
+  
+  .header-image {
+    width: 75%;
+    max-width: 650px;
+    margin-top: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05); /* Softer and deeper shadow */
+    pointer-events: none; /* Prevent any hover interaction */
+  }
+  
+  /* Optionally, if you want the iframe to behave like an image (not clickable, no hover effects) */
+  .header-image iframe {
+    pointer-events: none; /* Disable hover events */
+  }
+  
+  
+  .link-input {
+    width: 80%;
+    padding: 14px;
+    margin-top: 20px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .link-input:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 8px rgba(74, 144, 226, 0.3); /* Slightly deeper focus shadow */
+  }
+  
+  .join-room-btn {
+    width: 80%;
+    padding: 15px;
+    margin-top: 25px;
+    background-color: #4a90e2;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+  
+  .join-room-btn:hover {
+    background-color: #3b75c4;
+    transform: scale(1.05);
+  }
+  
+  .join-room-btn:active {
+    background-color: #2f5a9d;
+    transform: scale(1);
+  }
+  
+  .error-message,
+  .success-message {
+    font-size: 1rem;
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 10px;
+    width: 80%;
+    text-align: center;
+  }
+  
+  .error-message {
+    background-color: rgba(255, 99, 71, 0.1);
+    color: red;
+  }
+  
+  .success-message {
+    background-color: rgba(34, 193, 34, 0.1);
+    color: green;
+  }
+  
+  .instructions {
+    margin-top: 40px;
+    text-align: left;
+    color: #333;
+    width: 80%;
+    margin-left: 100px;
+  }
+  
+  .instructions h4 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: bold;
+  }
+  
+  .instructions ol {
+    list-style: decimal;
+    padding-left: 20px;
+  }
+  
+  .instructions li {
+    margin-bottom: 10px;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+  
+  .footer-image {
+    margin-top: 40px;
+    text-align: center;
+  }
+  
+  .footer-image-content {
+    width: 90%;
+    max-width: 1000px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  @media (max-width: 768px) {
+    .join-room-container {
+      padding: 20px;
+    }
+  
+    .link-input,
+    .join-room-btn {
+      width: 100%;
+    }
+  
+    .footer-image-content {
+      width: 100%;
+    }
+  }
+  

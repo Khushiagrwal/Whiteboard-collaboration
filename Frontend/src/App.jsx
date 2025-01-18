@@ -4,6 +4,7 @@ import {BrowserRouter as  Router,Routes,Route } from "react-router-dom"
 import Signup from '../pages/Signup'
 import Signin from '../pages/Signin'
 import Whiteboard from "../components/Whiteboard"
+import JoinRoom from '../components/JoinRoom'
 
 function App() 
 {
@@ -15,6 +16,7 @@ function App()
         <Route path='/Signup' element={<Signup/>}/>
         <Route path='/Signin' element={<Signin/>}/>
         <Route path='/whiteboard' element={<Whiteboard/>}/>
+        <Route path='/joinroom' element={<JoinRoom/>}/>
       </Routes>
     </Router>
     </>
