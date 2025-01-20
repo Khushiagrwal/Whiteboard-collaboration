@@ -5,7 +5,9 @@
     padding: 30px;
     background-color: #f9fafb;
     font-family: 'Arial', sans-serif;
-    min-height: 100vh;
+    min-height:90vh;
+    width:80%;
+    margin-left:7%;
   }
   
   .join-header {
@@ -84,8 +86,9 @@
     margin-top: 20px;
     padding: 12px;
     border-radius: 10px;
-    width: 80%;
+    width: 76%;
     text-align: center;
+    margin-left:10%;
   }
   
   .error-message {

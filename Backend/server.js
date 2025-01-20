@@ -47,13 +47,12 @@ mongoose
 
 // Routes
 app.use("/api/user", userRoute);
-
 app.get("/authenticate", isAuthenticate, (req, res) => {
   res.send("yes you are authenticate"); // Response if the user is authenticated
 });
 
 app.use("/api/share",isAuthenticate,inviteRoute);
-app.use("/api/join",isAuthenticate,joinRoute);
+app.use("/api/rooms",isAuthenticate,joinRoute);
 
 // Start Server
 server.listen(config.PORT, () => {

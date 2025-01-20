@@ -5,20 +5,23 @@ import Signup from '../pages/Signup'
 import Signin from '../pages/Signin'
 import Whiteboard from "../components/Whiteboard"
 import JoinRoom from '../components/JoinRoom'
+import { SocketProvider } from '../context/SocketContext'
 
 function App() 
 {
   return (
     <>
-    <Router>
-      <Routes>
-        <Route path='/' element={<Home/>}/>
-        <Route path='/Signup' element={<Signup/>}/>
-        <Route path='/Signin' element={<Signin/>}/>
-        <Route path='/whiteboard' element={<Whiteboard/>}/>
-        <Route path='/joinroom' element={<JoinRoom/>}/>
-      </Routes>
-    </Router>
+    <SocketProvider>
+      <Router>
+        <Routes>
+          <Route path='/' element={<Home/>}/>
+          <Route path='/Signup' element={<Signup/>}/>
+          <Route path='/Signin' element={<Signin/>}/>
+          <Route path='/whiteboard' element={<Whiteboard/>}/>
+          <Route path='/joinroom' element={<JoinRoom/>}/>
+        </Routes>
+      </Router>
+    </SocketProvider>
     </>
   )
 }

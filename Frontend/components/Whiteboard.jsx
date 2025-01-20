@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPencilAlt, FaEraser, FaCircle } from 'react-icons/fa'; // Import icons
-import io from 'socket.io-client';
 import '../public/Css/Whiteboard.css'; // Import the styling
 import {useNavigate} from "react-router-dom"
 import InviteLink from './InviteLink';
+import { useSocket } from '../context/SocketContext';
 
 const Whiteboard = () => {
+  const socket = useSocket();
   const canvasRef = useRef(null);
-  const socketRef = useRef(null);
   const [drawing, setDrawing] = useState(false);
   const [lastPosition, setLastPosition] = useState({ x: 0, y: 0 });
   const [brushSize, setBrushSize] = useState(5); 
@@ -19,6 +19,7 @@ const Whiteboard = () => {
 
   useEffect(() => {
     try {
+
       let userData = localStorage.getItem('persist:root');
       if (userData) {
         userData = JSON.parse(userData);
@@ -28,28 +29,11 @@ const Whiteboard = () => {
         setEmail(userInfo.email);
       }
     } catch (error) 
-    {
+    {  
       navigate("/signin")
       console.error('Error parsing user data from localStorage:', error);
     }
   }, []);
-
-  useEffect(() => {
-    if (user && !socketRef.current) {
-      // Create socket connection only if it's not already created
-      socketRef.current = io("http://localhost:8080/");
-      socketRef.current.emit("register", email);  // Register with the user email
-      console.log(socketRef.current)
-      // Cleanup function to disconnect the socket on unmount or when `user` changes
-      return () => {
-        if (socketRef.current) {
-          socketRef.current.disconnect();
-          // localStorage.removeItem('persist:root')
-          socketRef.current = null;  // Reset the socket reference
-        }
-      };
-    }
-  }, [user, email]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -68,19 +52,19 @@ const Whiteboard = () => {
     window.addEventListener('resize', scaleCanvas);
 
     // Handle drawing data from other clients
-    // socket.on('draw', (data) => {
-    //   const { x, y, lastX, lastY, tool, brushSize } = data;
-    //   ctx.lineWidth = brushSize;
-    //   if (tool === 'eraser') {
-    //     ctx.globalCompositeOperation = 'destination-out'; // Eraser effect
-    //   } else {
-    //     ctx.globalCompositeOperation = 'source-over'; // Pencil effect
-    //   }
-    //   ctx.beginPath();
-    //   ctx.moveTo(lastX, lastY);
-    //   ctx.lineTo(x, y);
-    //   ctx.stroke();
-    // });
+    socket.on('draw', (data) => {
+      const { x, y, lastX, lastY, tool, brushSize } = data;
+      ctx.lineWidth = brushSize;
+      if (tool === 'eraser') {
+        ctx.globalCompositeOperation = 'destination-out'; // Eraser effect
+      } else {
+        ctx.globalCompositeOperation = 'source-over'; // Pencil effect
+      }
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+    });
 
     // return () => {
     //   socket.off('draw'); // Cleanup listener on component unmount
@@ -117,14 +101,14 @@ const Whiteboard = () => {
     const { x, y } = lastPosition;
     const newPosition = getCursorPosition(e);
 
-    // socket.emit('draw', {
-    //   x: newPosition.x,
-    //   y: newPosition.y,
-    //   lastX: x,
-    //   lastY: y,
-    //   tool: currentTool,
-    //   brushSize: brushSize,
-    // });
+    socket.emit('draw', {
+      x: newPosition.x,
+      y: newPosition.y,
+      lastX: x,
+      lastY: y,
+      tool: currentTool,
+      brushSize: brushSize,
+    });
 
     ctx.lineWidth = brushSize;
 
@@ -176,6 +160,9 @@ const Whiteboard = () => {
       <h1 className="logo">Whiteboard App</h1>
       </div>
       <div className="navbar-right">
+      
+      {/* Invitation link component */}
+      
       {user && <InviteLink  userId={userId}/>}
       <div className="profile" onClick={toggleDropdown}>
       <img

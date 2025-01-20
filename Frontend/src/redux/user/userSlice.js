@@ -6,6 +6,7 @@ const userSlice = createSlice({
     loading: false,
     error: null,
     userInfo: null, // Store user information here
+    // socketConnectionId:null
   },
   reducers: {
     signInStart: (state) => {
@@ -15,6 +16,7 @@ const userSlice = createSlice({
     signInSuccess: (state, action) => {
       state.loading = false;
       state.userInfo = action.payload; // Save user data
+      // socketConnectionId=null;
     },
     signInFailure: (state, action) => {
       state.loading = false;
